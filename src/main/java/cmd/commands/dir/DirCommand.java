@@ -3,6 +3,7 @@ package cmd.commands.dir;
 import cmd.SimpleCmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 import java.io.File;
@@ -16,8 +17,8 @@ import static picocli.CommandLine.Option;
  * <p/>
  * Executing the command lists all the files and folders in the current working directory.
  *
- * @see SimpleCmd#getCurrentLocation() 
- * @see SimpleCmd#setCurrentLocation(File) 
+ * @see SimpleCmd#getCurrentLocation()
+ * @see SimpleCmd#setCurrentLocation(File)
  */
 @Command(
         name = "dir",
@@ -31,6 +32,8 @@ public class DirCommand implements Runnable {
     @Option(names = {"-s", "--sort"}, description = "possible values are {asc, desc} for ascending / descending order")
     private String sortOrder;
 
+    @CommandLine.Parameters(index = "0", description = "path where dir command should be executed", defaultValue = ".")
+    private File path;
 
     public DirCommand() {
         /* intentionally empty */
@@ -38,7 +41,12 @@ public class DirCommand implements Runnable {
 
     @Override
     public void run() {
-        listFilesInDirectory(SimpleCmd.getCurrentLocation());
+        if (path != null && !path.getName().equals(".")) {
+            listFilesInDirectory(path);
+        } else {
+            listFilesInDirectory(SimpleCmd.getCurrentLocation());
+        }
+
     }
 
     private void listFilesInDirectory(File directory) {
