@@ -24,8 +24,6 @@ public class MoveCommand implements Runnable {
         /* intentionally empty */
     }
 
-    private Path basePath;
-
     @CommandLine.Parameters(index = "0", description = "source path of the file to move")
     private File source;
 
@@ -35,16 +33,7 @@ public class MoveCommand implements Runnable {
     @Override
     public void run() {
         try {
-            basePath = SimpleCmd.getCurrentLocation().toPath();
-            LOG.info("\nsource: " + source.toPath().toAbsolutePath() + "  " + "target: " + target.toPath().toAbsolutePath() + "\n");
-            boolean a = source.setReadable(true);
-            source.setExecutable(true, false);
-            boolean b = target.setWritable(true, false);
-            target.setExecutable(true, false);
-            boolean c = target.canWrite();
-            if (a && b) {
-                Files.move(source.toPath().toAbsolutePath(), target.toPath().toAbsolutePath(), StandardCopyOption.ATOMIC_MOVE);
-            }
+            Files.move(source.toPath().toAbsolutePath(), target.toPath().toAbsolutePath(), StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
