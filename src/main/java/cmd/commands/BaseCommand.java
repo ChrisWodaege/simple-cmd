@@ -1,5 +1,6 @@
 package cmd.commands;
 
+import cmd.commands.cd.CdCommand;
 import cmd.commands.copy.CopyCommand;
 import cmd.commands.del.DelCommand;
 import cmd.commands.dir.DirCommand;
@@ -21,7 +22,7 @@ import picocli.CommandLine.Command;
         name = "cmd",
         description = "base command",
         mixinStandardHelpOptions = true,
-        subcommands = {DirCommand.class, DelCommand.class, CopyCommand.class, MoveCommand.class, MakeDirCommand.class, FileCommand.class})
+        subcommands = {DirCommand.class, DelCommand.class, CopyCommand.class, MoveCommand.class, MakeDirCommand.class, FileCommand.class, CdCommand.class})
 public class BaseCommand implements Runnable {
     public BaseCommand() {
         /* intentionally empty */
