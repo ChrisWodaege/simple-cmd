@@ -76,19 +76,24 @@ public class DirCommand implements Runnable {
     }
 
     private void printLine(File f) {
+        String text = "";
         if (filesOnly && !isShort) {
             if (!f.isDirectory()) {
-                LOG.info("{}\n", f.getAbsolutePath());
+                text = f.getAbsolutePath();
             }
-        } else if(!isShort){
-            LOG.info("{}\n", f.getAbsolutePath());
+        } else if (!isShort) {
+            text = f.getAbsolutePath();
         }
         if (filesOnly && isShort) {
             if (!f.isDirectory()) {
-                LOG.info("{}\n", f.getPath());
+                text = f.getPath();
             }
-        } else if(isShort){
-            LOG.info("{}\n", f.getPath());
+        } else if (isShort) {
+            text = f.getPath();
         }
+        if (f.isDirectory()) {
+            text = text + File.separator;
+        }
+        LOG.info("{}\n", text);
     }
 }
