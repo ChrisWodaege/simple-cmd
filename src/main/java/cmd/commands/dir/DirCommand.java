@@ -32,6 +32,9 @@ public class DirCommand implements Runnable {
     @Option(names = {"-s", "--sort"}, description = "possible values are {asc, desc} for ascending / descending order")
     private String sortOrder;
 
+    @Option(names = {"-t", "--short"}, description = "print relative file path")
+    private boolean isShort;
+
     @CommandLine.Parameters(index = "0", description = "path where dir command should be executed", defaultValue = ".")
     private File path;
 
@@ -73,12 +76,19 @@ public class DirCommand implements Runnable {
     }
 
     private void printLine(File f) {
-        if (filesOnly) {
+        if (filesOnly && !isShort) {
             if (!f.isDirectory()) {
                 LOG.info("{}\n", f.getAbsolutePath());
             }
-        } else {
+        } else if(!isShort){
             LOG.info("{}\n", f.getAbsolutePath());
+        }
+        if (filesOnly && isShort) {
+            if (!f.isDirectory()) {
+                LOG.info("{}\n", f.getPath());
+            }
+        } else if(isShort){
+            LOG.info("{}\n", f.getPath());
         }
     }
 }
