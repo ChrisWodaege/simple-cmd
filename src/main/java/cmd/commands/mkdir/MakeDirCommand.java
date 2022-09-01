@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import cmd.SimpleCmd;
 import picocli.CommandLine;
 
 @CommandLine.Command(
@@ -18,33 +19,63 @@ import picocli.CommandLine;
 
 public class MakeDirCommand implements Runnable {
 
+    @CommandLine.Option(names = {"-f", "-file"}, description = "create a file, default is directory")
+    private boolean isFile;
+
+    @CommandLine.Parameters(index = "0", description = "path of new directory or file")
+    private File newPath;
+
     private final String newFolderName = "New Folder";
     private final String newFileName = "new_file.txt";
 
+    public MakeDirCommand() {
+    }
+
+
     @Override
     public void run() {
-        createFolder();
-//        createFile();
+        if (isFile){
+            createFile();
+        } else {
+            createFolder();
+        }
     }
 
     private void createFolder() {
 
-        File newDirectory = new File(System.getProperty("user.dir") + File.separator + newFolderName);
-        File nestedDirectory = new File(newDirectory, "nested_directory");
+        Path newDirectory = Paths.get(SimpleCmd.getCurrentLocation() + File.separator + newPath.toString());
+//        File nestedDirectory = new File(newDirectory, "nested_directory");
+//
+//        nestedDirectory.mkdirs();
+        if (Files.notExists(newDirectory) && !Files.isDirectory(newDirectory)){
+        try{
+            Files.createDirectory(newDirectory);
 
-        nestedDirectory.mkdirs();
+        } catch(IOException e){
+                e.printStackTrace();
+        }
         System.out.println("new folder created");
+
+        } else {
+            System.out.println("directory already exists");
+        }
     }
 
     private void createFile() {
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter(newFileName, "UTF-8");
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            e.printStackTrace();
+        String currentLocation = SimpleCmd.getCurrentLocation().getAbsolutePath();
+        Path resultPath = Paths.get(currentLocation + File.separator + newPath.toString() + ".txt");
+        if(Files.notExists(resultPath)) {
+            try {
+                Files.createFile(resultPath);
+                System.out.println("new file created");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+                System.out.println("file already exists");
         }
 
-        System.out.println("new file created");
-        writer.close();
+
+
     }
 }
